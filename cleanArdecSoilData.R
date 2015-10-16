@@ -36,12 +36,12 @@ saveDF <- function(dataFrame, fullFilename) {
 library(dplyr); library(xlsx)
 
 # Read raw data file
-rawDataPath <- 'W:/R/SPNR/ARDEC projects/'
+rawDataPath <- 'W:/ARDEC projects/'
 #rawDataPath <- 'C:/Users/Robert/Documents/R/ARDEC/'
-rawDataFile <- 'R1W_Soil_Lite_Raw.xlsx'
+rawDataFile <- 'R2_Soil_Lite.xlsx'
 fullRawFilename <- paste(rawDataPath, rawDataFile, sep = '')
 # Worksheet 1 contains nitrate values; worksheet 2 contains ammonium values
-rawData <- read.xlsx2(fullRawFilename, sheetIndex = 2, stringsAsFactors = FALSE)
+rawData <- read.xlsx2(fullRawFilename, sheetIndex = 1, stringsAsFactors = FALSE)
 
 # Remove rows with missing values for trt
 rawData <- filter(rawData, !(is.na(trt) | trt == ''))
@@ -55,13 +55,13 @@ depthBottomVec <- as.vector(depthBottomList)
 
 # Number of columns in rawData
 rawDataCols <- ncol(rawData)
-# Initialize vector for ammonium values
-nh4Complete <- as.vector(numeric())
+# Initialize vector for nitrate values
+no3Complete <- as.vector(numeric())
 
-# Construct a vector of ordered nh4 values
+# Construct a vector of ordered no3 values
 for(rowNum in 1:nrow(rawData)) {
-  nh4SubVec <- rawData[rowNum, 7:rawDataCols]
-  nh4Complete <- append(nh4Complete, nh4SubVec)
+  no3SubVec <- rawData[rowNum, 7:rawDataCols]
+  no3Complete <- append(no3Complete, no3SubVec)
 }
 
 # Initialize currentDate
@@ -81,6 +81,7 @@ trtVector <- as.vector(integer())
 rateVector <- as.vector(numeric())
 repVector <- as.vector(integer())
 plotVector <- as.vector(integer())
+suffixVector <- as.vector(character())
 
 # Populate vectors
 for(rowNum in 1:nrow(rawData)) {
@@ -89,26 +90,27 @@ for(rowNum in 1:nrow(rawData)) {
   rateVector <- append(rateVector, rep(rawData$rateN[rowNum], 8))
   repVector <- append(repVector, rep(rawData$rep[rowNum], 8))
   plotVector <- append(plotVector, rep(rawData$plot[rowNum], 8))
+  suffixVector <- append(suffixVector, rep(rawData$plotSuffix[rowNum], 8))
 }
 
 # Coerce to DF
 tidyData <- as.data.frame(cbind(dateVector, trtVector, rateVector, repVector,
-                                plotVector, depthTopVec, depthBottomVec,
-                                nh4Complete))
+                                plotVector, suffixVector, depthTopVec,
+                                depthBottomVec, no3Complete))
 # Rename columns
 names(tidyData) <- c('sampDate', 'trtLevel', 'trtRate', 'rep', 'plotNumber',
-                     'depthTop', 'depthBottom', 'ammonium')
+                     'plotSuffix', 'depthTop', 'depthBottom', 'nitrate')
 
-# Remove rows that are missing a ammonium value (some depths not sampled)
-tidyData <- filter(tidyData, !(is.na(ammonium) | ammonium == ''))
+# Remove rows that are missing a nitrate value (some depths not sampled)
+tidyData <- filter(tidyData, !(is.na(nitrate) | nitrate == ''))
 
 # Convert Excel date code into an R time value
 tidyData$sampDate <- as.POSIXct(as.numeric(tidyData$sampDate) * (60*60*24),
-           origin="1899-12-30", tz="GMT")
+                                origin="1899-12-30", tz="GMT")
 
 #tidyDataPath <- 'C:/Users/Robert/Documents/R/ARDEC/'
 tidyDataPath <- rawDataPath
-tidyDataFile <- 'R1W_Soil_Lite_Tidy_NH4.xlsx'
+tidyDataFile <- 'R2_Soil_Tidy_NO3.xlsx'
 fullTidyFilename <- paste(tidyDataPath, tidyDataFile, sep = '')
 saveDF(tidyData, fullTidyFilename)
 
