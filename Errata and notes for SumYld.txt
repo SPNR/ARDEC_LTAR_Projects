@@ -1,0 +1,24 @@
+Errata for SumYld_Residue_99-14_ARDEC_Halvorson.xlsx
+
+CT
+
+1.  N source for 2014 should be Urea instead of SuperU
+2.  N source for 2012 should be SuperU instead of ESN.  (Urea is correct for N treatment 2.)
+
+By comparing the 2013 plant results for plot 73, I found that cob and stalk yields were taken from the biomass operation, and grain yields (both OD and 15.5%) were taken from the harvest operation.  Thus, biomass grain values do not appear in this summary.  In my SAS datasets, I will retain this convention.
+
+
+Rot1 NTvsST
+
+1.  N sources for 2012 should be SuperU and urea instead of ESN and urea.
+
+
+Field-dry moisture levels for grains:
+	Corn 15.5%
+	Barley 12%
+	Soybean 13%
+
+
+Rot2 Corn
+
+1.  N sources for 2012 should be urea and SuperU instead of urea and ESN.

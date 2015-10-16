@@ -1,0 +1,12 @@
+Errata for SumSoilN_99-14.xlsx
+
+
+NT_Rot1_soilN
+
+For crop year 2002, the fall sampling date reads 11/2/04 instead of 11/2/02.
+
+
+Rot2soilN
+
+For sampling date 11-19-2008, the ammonium data is offset one row upward compared to the nitrate data.
+
