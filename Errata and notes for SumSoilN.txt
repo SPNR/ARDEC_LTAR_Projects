@@ -1,4 +1,9 @@
-Errata for SumSoilN_99-14.xlsx
+Errata and notes for SumSoilN_99-14.xlsx
+
+
+Notes:
+
+The applied N treatment indicated for a given soil sampling event was applied in the spring of that sampling year, shortly after planting.
 
 
 NT_Rot1_soilN
