@@ -1,24 +1,79 @@
-Errata for SumYld_Residue_99-14_ARDEC_Halvorson.xlsx
-
-CT
-
-1.  N source for 2014 should be Urea instead of SuperU
-2.  N source for 2012 should be SuperU instead of ESN.  (Urea is correct for N treatment 2.)
-
-By comparing the 2013 plant results for plot 73, I found that cob and stalk yields were taken from the biomass operation, and grain yields (both OD and 15.5%) were taken from the harvest operation.  Thus, biomass grain values do not appear in this summary.  In my SAS datasets, I will retain this convention.
+Errata and notes for SumYld_Residue_99-14_ARDEC_Halvorson.xlsx
 
 
-Rot1 NTvsST
-
-1.  N sources for 2012 should be SuperU and urea instead of ESN and urea.
-
+Notes:
 
 Field-dry moisture levels for grains:
 	Corn 15.5%
 	Barley 12%
 	Soybean 13%
 
+Reported values for cob and stalk yields are taken from the biomass operation, and grain yields are taken from the harvest operation.  Thus, biomass grain values do not appear in this multi-year data summary.  I will retain this convention throughout my statistical analyses.
+
+The NT/ST distinction in Rotation 1 was retained in 2012 field data, even though the last tillage operation was performed in 2011.
+
+
+ST/CT
+
+1.  N source for 2014 should be Urea instead of SuperU, according to operations file, plot map file and corn harvest summary file.
+
+2.  N source for 2012 should be SuperU instead of ESN.  (Urea is correct for N treatment 2.)
+
+corn harvest summary: Urea and ESN
+ops file: Urea and SuperU
+map file: Urea and SuperU
+
+
+Rot1 NTvsST
+
+1.  N sources for 2012 should be SuperU and urea instead of ESN and urea.
+
+corn harvest summary: Urea and SuperU
+ops file: Urea and SuperU
+map file: Urea and SuperU
+
 
 Rot2 Corn
 
 1.  N sources for 2012 should be urea and SuperU instead of urea and ESN.
+
+corn harvest summary: Urea and SuperU
+ops file: Urea and SuperU
+map file: Urea and SuperU
+
+
+############################################################
+
+
+Email correspondence:
+
+--------------------------------------------------------------------------------------------------------
+From: Floyd, Bradley 
+Sent: Wednesday, October 21, 2015 12:13 PM
+To: D'Adamo, Robert
+Subject: RE: applied N in Ardec plots
+
+2012 – Strip Till was fertilized using SU and Urea (Urea on N2 plots at 180 lb N/a) (Super U on N3, N4, N5 plots)
+2011 – Rot 1 was fertilized using ESN and Urea (Urea on N2 plots at 180 lb N/a) (ESN on N3, N4, N5, N6 plots)  I must have made a mistake on the ops file.
+
+You can also double check me if you look at the hard copy of my notes in the binder above Adryan’s desk.  I will triple check my fertilizer notes when I’m the office next, but I’m at least 90% sure this is correct.
+
+
+From: D'Adamo, Robert 
+Sent: Wednesday, October 21, 2015 11:05 AM
+To: Floyd, Bradley
+Subject: applied N in Ardec plots
+
+Brad,
+
+I’m looking at Ardec data that Ardell summarized for Jorge, and some information seems to contradict our records.   I would appreciate any input you can offer to resolve the differences.
+
+1.	Ardell’s summary gives ESN and Urea as the applied N sources for Strip Till in 2012, which agrees with the harvest summary file, but the operations file and plot map file both indicate that SuperU and Urea were used.  
+
+2.	Ardell’s summary gives ESN and Urea as the sources for Rotation 1 in 2011, which agrees with the harvest summary file and the plot map file, but the operations file indicates that SuperU and Urea were used.
+
+
+Thanks for looking into this,
+Rob
+--------------------------------------------------------------------------------------------------------
+
