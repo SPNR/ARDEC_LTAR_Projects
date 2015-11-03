@@ -63,6 +63,8 @@ tidyData$yieldOvenDry_kg_per_ha <- c(grainOD, stalkOD, cobOD)
 # populate just a specific range.
 tidyData$yieldFieldDry_kg_per_ha <- NA_real_
 tidyData$yieldFieldDry_kg_per_ha[1:nrow(rawData)] <- grainField
+
+# Remove unneeded columns
 tidyData$yieldGrainFieldDry_kg_per_ha <- NULL
 tidyData$yieldGrainOvenDry_kg_per_ha <- NULL
 tidyData$yieldStalkOvenDry_kg_per_ha <- NULL
