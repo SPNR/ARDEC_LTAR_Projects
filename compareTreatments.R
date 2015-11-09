@@ -1,7 +1,8 @@
 ################################################################################
 #
 # Function chooseExcelFile
-# Spawn a file chooser for selecting appropriate Excel soil file
+# Spawns a file chooser for selecting appropriate Excel soil file and reads
+# file, applying the classes that are specified in the file's second worksheet.
 #
 ################################################################################
 
@@ -14,14 +15,18 @@ chooseExcelFile <- function() {
   
   # xlsx provides read/write functions for Excel files
   library(xlsx)
-  excelSheet <- read.xlsx2(filename, sheetIndex = 1, stringsAsFactors = FALSE)
-  excelSheet  # Return value
+  columnClasses <- read.xlsx2(filename, sheetIndex = 2, stringsAsFactors = FALSE)
+  classVector <- columnClasses[, 2]
+  names(classVector) <- columnClasses[, 1]
+  read.xlsx2(filename, sheetIndex = 1, colClasses = classVector,
+             stringsAsFactors = FALSE)
 }
 
 
 ################################################################################
 #
-# Convert an Excel date/time code to an R date object
+# Function excelDateToR
+# Converts an Excel date/time code to an R date object
 #
 ################################################################################
 
@@ -33,7 +38,8 @@ excelDateToR <- function(excelDate) {
 
 ################################################################################
 #
-# Extract numeric month, day and year from an R date object
+# Function extractMDY
+# Extracts numeric month, day and year from an R date object
 #
 ################################################################################
 
@@ -47,6 +53,7 @@ extractMDY <- function(rDate) {
 
 ################################################################################
 #
+# Function fatalError
 # Handle fatal errors with message output
 #
 ################################################################################
@@ -62,22 +69,27 @@ fatalError <- function (errorMessage) {
 #
 #Compare treatment values in soil and plant files to ensure consistency
 
-#Read files
+#Read files, applying column classes
 soil <- chooseExcelFile()
 plant <- chooseExcelFile()
 
 #Transform date codes into R-formatted dates
 rDate <- excelDateToR(soil$sampDate)
 
-dateDF <- extractMDY(rDate)  #Extract numeric month, day and year values
-soil <- cbind(dateDF, soil)  #Add numeric columns to soil df
-soil$sampDate <- NULL  #Delete sampDate column
+#dateDF <- extractMDY(rDate)  #Extract numeric month, day and year values
+#soil <- cbind(dateDF, soil)  #Add numeric columns to soil df
+#soil$sampDate <- NULL  #Delete sampDate column
 
 #Coerce plant date values to numeric for comparison with corresponding soil values
 plant$sampYear <- as.numeric(plant$sampYear)
 plant$sampMonth <- as.numeric(plant$sampMonth)
 plant$sampDay <- as.numeric(plant$sampDay)
 
+#Replace NA values of trtRateN2 with zeros
+soil$trtRateN2_kg_per_ha[is.na(soil$trtRateN2_kg_per_ha)] <- 0
+plant$trtRateN2_kg_per_ha[is.na(plant$trtRateN2_kg_per_ha)] <- 0
+
+library(dplyr)
 #Coerce treatment rate values to numeric, rounding to 3 decimal places
 soil$trtRateN1_kg_per_ha <- as.numeric(soil$trtRateN1_kg_per_ha) %>% round(, 3)
 plant$trtRateN1_kg_per_ha <- as.numeric(plant$trtRateN1_kg_per_ha) %>% round(, 3)
@@ -89,7 +101,6 @@ years <- c(2000:2013)  #Ignore 2014 because of E/W fert split, and ignore 1999.
 plots <- unique(soil$plotNumber)
 #suffixes <- unique(soil$plotSuffix)
 
-library(dplyr)
 #Loop over years and plot numbers
 for(yr in years) {
   for(pn in plots) {
