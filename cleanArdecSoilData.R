@@ -15,7 +15,6 @@ readWithClasses <- function(fullFilename) {
 }
 
 
-
 ################################################################################
 #
 # This function saves a data frame to an Excel worksheet
@@ -24,7 +23,6 @@ readWithClasses <- function(fullFilename) {
 saveDF <- function(dataFrame, fullFilename) {
   write.xlsx2(dataFrame, file = fullFilename, showNA = FALSE, row.names = FALSE)
 }
-
 
 
 ################################################################################
@@ -36,9 +34,9 @@ saveDF <- function(dataFrame, fullFilename) {
 library(dplyr); library(xlsx)
 
 # Read raw data file
-rawDataPath <- 'W:/ARDEC projects/'
+rawDataPath <- 'C:/Users/Robert.Dadamo/Google Drive/USDA/ARDEC LTAR projects/'
 #rawDataPath <- 'C:/Users/Robert/Documents/R/ARDEC/'
-rawDataFile <- 'R2_Soil_Lite.xlsx'
+rawDataFile <- 'ST_CT_soil_lite.xlsx'
 fullRawFilename <- paste(rawDataPath, rawDataFile, sep = '')
 # Worksheet 1 contains nitrate values; worksheet 2 contains ammonium values
 rawData <- read.xlsx2(fullRawFilename, sheetIndex = 1, stringsAsFactors = FALSE)
@@ -49,7 +47,7 @@ rawData <- filter(rawData, !(is.na(trt) | trt == ''))
 # Depth increment lists to be used in tidy DF
 depthTopList <- rep(c(0, 3, 6, 12, 24, 36, 48, 60), nrow(rawData))
 depthBottomList <- rep(c(3, 6, 12, 24, 36, 48, 60, 72), nrow(rawData))
-
+#Coerce lists to vectors
 depthTopVec <- as.vector(depthTopList)
 depthBottomVec <- as.vector(depthBottomList)
 
