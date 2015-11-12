@@ -23,7 +23,6 @@ readWithClasses <- function(fullFilename) {
 #
 ################################################################################
 chooseExcelFile <- function() {
-  
   path <- 'C:/Users/Robert.Dadamo/Google Drive/USDA/ARDEC LTAR projects/'
   fileExt <- '.xlsx'
   defaultFile <- paste(path, 'Soil_or_Plant', fileExt, sep = '')
@@ -52,31 +51,35 @@ fatalError <- function (errorMessage) {
 }
 
 
-#--------------------------------------
+#-----------------------------------
 #Compare N rates in soil/plant summary files to those in ARDEC N-rate master file
 #
 #Read master N-rate file
-nRateFile <- 'W:/ARDEC projects/ARDEC N Rates.xlsx'
+nRateFile <- 'C:/Users/Robert.Dadamo/Google Drive/USDA/ARDEC LTAR projects/ARDEC N Rates.xlsx'
 nRatesAll <- readWithClasses(nRateFile)
 
 #Read ARDEC data file, applying column classes
 ardec <- chooseExcelFile()
 #Identify current study
 currentStudy <- ardec$study[1]
-#Replace each NA value with a blank or a zero
-ardec$trtType2[is.na(ardec$trtType2)] <- ''
-ardec$trtRateN2_kg_per_ha[is.na(ardec$trtRateN2_kg_per_ha)] <- 0
+#Replace each NA value with a blank or a zero, depending on column class
+# replaceNA(ardec$trtType2)
+# replaceNA(ardec$trtRateN2_kg_per_ha)
+# replaceNA(ardec$plotSuffix)
+ardec[is.na(ardec)] <- 0
 
-  
 library(dplyr)
 #Subset nRatesAll for study of interest
 nRates <- filter(nRatesAll, study == currentStudy)
-nRates$trtType2[is.na(nRates$trtType2)] <- ''
-nRates$trtRateN2_kg_per_ha[is.na(nRates$trtRateN2_kg_per_ha)] <- 0
+#Replace each NA value with a blank or a zero, depending on column class
+# replaceNA(nRates$trtType2)
+# replaceNA(nRates$trtRateN2_kg_per_ha)
+# replaceNA(nRates$plotSuffix)
+nRates[is.na(nRates)] <- 0
+
 #Determine years common to both DFs
 commonYears <- intersect(unique(nRates$year), unique(ardec$sampYear))
 
-#Subset both DFs by year, plotSuffix and trtLevel
 for(yr in commonYears) {  #For each common year
   #Subset each df for current year
   ardecYr <- filter(ardec, sampYear == yr)  #Subset by year
@@ -92,43 +95,42 @@ for(yr in commonYears) {  #For each common year
     nRatesYrTr <- filter(nRatesYr, trtLevel == tr)  #Subset by trtLevel
     #Check for mismatch in trtType1
     if(sort(unique(nRatesYrTr$trtType1)) != sort(unique(ardecYrTr$trtType1)))
-      fatalError(cat('trtType1l mismatch in year', yr, 'trtLevel', tr))
+      fatalError(cat('trtType1 mismatch in year', yr, 'trtLevel', tr))
     #Create list of current trtType1s
-    tp1s <- unique(nRatesYr$trtType1)
+    sfxs <- unique(nRatesYrTr$plotSuffix)
     
-    for(tp1 in tp1s) {  #For each trtType1
-      ardecYrTrT1 <- filter(ardecYrTr, trtType1 == tp1)  #Subset by trtType1
-      nRatesYrTrT1 <- filter(nRatesYrTr, trtType1 == tp1)  #Subset by trtType1
-      #Check for mismatch in trtType2
-      if(sort(unique(nRatesYrTrT1$trtType2)) != sort(unique(ardecYrTrT1$trtType2)))
-        fatalError(cat('trtType2 mismatch in year', yr, 'trtLevel', tr,
-                       'trtType1', tp1))
-      #Create list of current trtType2s
-      tp2s <- unique(nRatesYrTrT1$trtType2)
+    for(sfx in sfxs) {  #For each plotSuffix
+      ardecYrTrSfx <- filter(ardecYrTr, plotSuffix == sfx)  #Subset by plotSuffix
+      nRatesYrTrSfx <- filter(nRatesYrTr, plotSuffix == sfx)  #Subset by plotSuffix
+      if(nrow(ardecYrTrSfx) == 0 | nrow(nRatesYrTrSfx) == 0)
+        break
+#         fatalError(cat('zero rows in year', yr, 'trtLevel', tr,
+#                        'suffix', sfx))
       
-      for(tp2 in tp2s) {  #For each trtType2
-        ardecYrTrT1T2 <- filter(ardecYrTrT1, trtType2 == tp2)  #Subset by trtType2
-        nRatesYrTrT1T2 <- filter(nRatesYrTrT1, trtType2 == tp2)  #Subset by trtType2
-        #Check for mismatch in trtRateN1
-        if(sort(unique(nRatesYrTrT1T2$trtRateN1_kg_per_ha)) !=
-           sort(unique(ardecYrTrT1T2$trtRateN1_kg_per_ha)))
-          fatalError(cat('trtRateN1 mismatch in year', yr, 'trtLevel', tr,
-                         'trtType1', tp1, 'trtType2', tp2))
-        #Create list of current trtRateN1s
-        rt1s <- unique(nRatesYrTrT1T2$trtRateN1_kg_per_ha)
+      for(rowNum in 1:nrow(ardecYrTrSfx)) {
         
-        for(rt1 in rt1s) {  #For each trtRateN1
-          ardecYrTrT1T2R1 <- filter(ardecYrTrT1T2, trtRateN1_kg_per_ha == rt1)  #Subset by trtRate1
-          nRatesYrTrT1T2R1 <- filter(nRatesYrTrT1T2, trtRateN1_kg_per_ha == rt1)  #Subset by trtRate1
-          #Check for mismatch in trtRateN2
-          if(sort(unique(nRatesYrTrT1T2R1$trtRateN2_kg_per_ha)) !=
-             sort(unique(ardecYrTrT1T2R1$trtRateN2_kg_per_ha)))
-            fatalError(cat('trtRateN2 mismatch in year', yr, 'trtLevel', tr,
-                           'trtType1', tp1, 'trtType2', tp2, 'trtRate1', rt1))
-        }
+        #*** This if statement throws an error due to the presence of E or W
+        #as a plot suffix (due to tillage difference), when no plot suffix appears
+        #in the N-rate file (no E/W fertilization difference).
+        if((ardecYrTrSfx$trtType1[rowNum] != nRatesYrTrSfx$trtType1[1]) |
+           (ardecYrTrSfx$trtType2[rowNum] != nRatesYrTrSfx$trtType2[1]) |
+           (ardecYrTrSfx$trtRateN1_kg_per_ha[rowNum] -
+            nRatesYrTrSfx$trtRateN1_kg_per_ha[1] > 0.1) |
+           (ardecYrTrSfx$trtRateN2_kg_per_ha[rowNum] -
+            nRatesYrTrSfx$trtRateN2_kg_per_ha[1]) > 0.1) 
+          cat('mismatch in year', yr, 'trtLevel', tr, 'suffix', sfx, 'row',
+              rowNum, '\n')
       }
     }
   }
 }
 
-
+ 
+# ardecYrTrSfx$trtType2[rowNum] == nRatesYrTrSfx$trtType2[1]
+# 
+# all.equal(ardecYrTrSfx$trtRateN2_kg_per_ha[rowNum], nRatesYrTrSfx$trtRateN2_kg_per_ha[1])
+# 
+# all.equal(.01, 4, tolerance = .01)
+# 
+# ardecYrTrSfx$trtRateN2_kg_per_ha[rowNum] == nRatesYrTrSfx$trtRateN2_kg_per_ha[1]
+# ardecYrTrSfx$trtRateN2_kg_per_ha[rowNum] <- 3
