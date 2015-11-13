@@ -34,21 +34,25 @@ saveDF <- function(dataFrame, fullFilename) {
 ################################################################################
 
 # Read raw data file
-rawDataPath <- 'W:/R/SPNR/ARDEC projects/'
-rawDataFile <- 'ARDEC_R1_Plant_All_Years_Raw.xlsx'
+#rawDataPath <- 'W:/R/SPNR/ARDEC projects/'
+rawDataPath <- 'C:/Users/Robert.Dadamo/Google Drive/USDA/ARDEC LTAR projects/'
+rawDataFile <- 'R3_Plant_Lite_.xlsx'
 fullRawFilename <- paste(rawDataPath, rawDataFile, sep = '')
 rawData <- readWithClasses(fullRawFilename)
 
+#Replace all NA values with zeros
+rawData[is.na(rawData)] <- 0
 # Fill in crop
 rawData$crop <- 'Corn'
 # Remove rows with missing values for trtType1
-rawData <- filter(rawData, !(is.na(trtType1) | trtType1 == ''))
+#rawData <- filter(rawData, !(is.na(trtType1) | trtType1 == ''))
 
 # Form vectors for use in tidyData DF
 grainField <- rawData$yieldGrainFieldDry_kg_per_ha
 grainOD <- rawData$yieldGrainOvenDry_kg_per_ha
 stalkOD <- rawData$yieldStalkOvenDry_kg_per_ha
 cobOD <- rawData$yieldCobOvenDry_kg_per_ha
+
 # Create tidyData with enough rows to accommodate all yield values from all
 # plant segments in a single column
 tidyData <- rbind(rawData, rawData, rawData)
@@ -70,7 +74,7 @@ tidyData$yieldGrainOvenDry_kg_per_ha <- NULL
 tidyData$yieldStalkOvenDry_kg_per_ha <- NULL
 tidyData$yieldCobOvenDry_kg_per_ha <- NULL
 
-savePath <- 'W:/R/SPNR/ARDEC projects/'
-saveFile <- 'ARDEC_R1_Plant_All_Years_Tidy.xlsx'
+savePath <- rawDataPath
+saveFile <- paste('Tidier', rawDataFile, sep = '_')
 fullSaveFilename <- paste(savePath, saveFile, sep = '')
 saveDF(tidyData, fullSaveFilename)
